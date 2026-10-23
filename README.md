@@ -1,99 +1,35 @@
-# Knightly Chess
+# Knightly Chess Tools
 
-![screenshot](images/screenshot.png)
+Knightly is being converted from a standalone chess website into a browser extension. The extension adds SVG move arrows and post-game engine analysis on Chess.com, Lichess, and WorldChess.com.
 
-[**Knightly Chess**](/) is a free, open-source chess platform for game analysis, online play, and engine-powered improvement.
+## Preserved engines
 
+Engine files remain in the repository, including Stockfish, Dragon, Rodent, and Andromeda:
+- `public/engine/` — Stockfish, Dragon, Rodent, supporting NNUE/WASM files, and opening book
+- `src/engine/` — Andromeda and Stockfish integration/source files
+- `stockfish-gui/public/engine/` — the existing Stockfish 19 Lite worker asset
+- `LICENSE`, `ATTRIBUTIONS`, `.gitattributes`, and `stockfish-gui/LICENSE.md` are retained for licensing and attribution
 
+## Install the extension locally
 
-## Engine Lab
+1. Download/clone this repository and ensure Git LFS is installed.
+2. Run `git lfs install` and `git lfs pull` in the repository directory so engine WASM files are actual binaries rather than small LFS pointer text files.
+3. Open `chrome://extensions` in Chrome or a Chromium browser.
+4. Enable **Developer mode**.
+5. Click **Load unpacked** and select the repository root (the folder containing `manifest.json`).
+6. Open Chess.com, Lichess, or WorldChess.com and reload the tab.
+7. Open the Knightly extension popup.
 
-Knightly includes an **Engine Lab** at `/engine-lab` powered by the Stockfish Chess Web GUI project. It provides a full chessboard, engine play, adjustable strength, position import, and analysis tools. The original GUI is retained under `stockfish-gui/` and licensed under AGPL-3.0; Stockfish remains under its own GPL license. The GitHub Pages workflow fetches the upstream Stockfish 19 WebAssembly and opening-book assets during deployment, then bundles the GUI into the static site.
+## Features
 
-## Self Hosting
+- Draw and clear arrows between algebraic squares such as `e2` and `e4`.
+- Corrects square coordinates for a detected flipped board.
+- Includes Stockfish, Dragon, and Rodent UCI worker choices.
+- Attempts to read a FEN from a finished-game/review page when the site exposes one; otherwise paste a full FEN from the site's analysis tools.
+- Engine analysis is restricted to pages detected as finished-game/review/study pages. The extension does not make moves or play automatically.
 
-1. Clone the repository:
+## Testing and limitations
 
-```
-git clone https://github.com/wdeloo/Brilliant-Chess.git
-cd Brilliant-Chess
-```
+The manifest JSON and extension JavaScript syntax have been checked. This does not equal a live browser test: the extension still needs to be loaded in Chrome and tested against each site's current DOM. The sites may change their board selectors and FEN exposure. Engine runtime testing also requires real Git LFS WASM assets; the GitHub API may display LFS pointer text instead of the binaries.
 
-2. Create a `.env` file:
-
-```
-echo "NEXT_PUBLIC_BASE_PATH=" > .env
-```
-
-3. Install dependencies and build the project:
-
-```
-npm install
-npm run build
-```
-
-4. Start the server:
-
-```
-npm run start
-```
-
-
-# Knightly Online Chess — Firebase setup
-
-The existing analyzer remains client-side and keeps using the bundled Stockfish WebAssembly engine. The new /play area adds onboarding, provisional ELO, matchmaking, human games, chat and local Stockfish play.
-
-## 1. Create Firebase services
-
-Create a Firebase project and enable:
-- Authentication -> Anonymous
-- Realtime Database
-- Cloud Functions
-
-Anonymous auth lets a new player enter the lobby without a separate account. You can later link that account to a permanent provider.
-
-## 2. Configure the web app
-
-Set these deployment variables:
-
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_web_api_key
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your-database-url
-```
-
-The Firebase Web API key is a browser identifier, not a service-account secret. Never put a Firebase service-account private key in frontend code.
-
-## 3. Deploy rules and referee
-
-After selecting your Firebase project:
-
-```
-firebase use YOUR_PROJECT_ID
-firebase deploy --only database,functions
-```
-
-The database rules prevent normal clients from editing their own ELO/stat totals after profile creation. Online moves are submitted as proposals; the Cloud Function validates them with chess.js, updates the authoritative FEN/turn/result, and applies ELO after a finished game.
-
-## 4. Build the website
-
-```
-npm ci
-npm run build
-```
-
-Deploy the generated static site as you already do.
-
-## Online features
-
-- Beginner / intermediate / advanced onboarding
-- Five chess knowledge questions
-- Provisional starting ELO
-- ELO-near matchmaking
-- Server-refereed legal moves
-- Automatic win/loss/draw detection
-- Server-side ELO updates after rated games
-- In-game opponent chat
-- Local Stockfish opponent with strength limited around the player's rating
-- Existing PGN/FEN/Chess.com/Lichess analysis remains available on the main page
-
-The referee is separate from the static Next.js frontend because a browser-only client must not be trusted to award its own rating.
+If an engine reports a WASM compile/load error, verify that `git lfs pull` completed successfully and that the matching `.wasm` files exist beside their engine scripts. Do not remove engine license/copyright notices when redistributing them.
