@@ -32,7 +32,7 @@
       "public/engine/stockfish.wasm",
       "public/engine/stockfish-part-*.wasm",
       "public/engine/stockfish-single-part-*.wasm",
-      "public/engine/stockfish-asm.js"
+      "public/engine/stockfish-asm.js",\n      "public/engine/dragon.js",\n      "public/engine/dragon.wasm",\n      "public/engine/explanation-engine.js",\n      "public/engine/explanation-engine.wasm",\n      "public/engine/rodent/*"
     ],
     "matches": [
       "https://www.chess.com/*",
