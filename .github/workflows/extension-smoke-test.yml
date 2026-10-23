@@ -1,0 +1,44 @@
+name: Knightly extension smoke test
+
+on:
+  push:
+    branches:
+      - main
+      - extension/board-engine-adapter
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository and resolve Git LFS assets
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate extension manifest
+        run: node -e "const m = require('./manifest.json'); if (m.manifest_version !== 3) process.exit(1); if (!m.content_scripts?.length) process.exit(1); console.log('Manifest OK');"
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check extension/board.js
+          node --check extension/popup.js
+
+      - name: Verify preserved engine assets
+        run: |
+          test -s public/engine/stockfish.js
+          test -s public/engine/dragon.js
+          test -s public/engine/rodent/rodent.js
+          test -s src/engine/andromeda.js
+          ! grep -q "version https://git-lfs.github.com/spec/v1" public/engine/stockfish.wasm
+          ! grep -q "version https://git-lfs.github.com/spec/v1" public/engine/dragon.wasm
+          ! grep -q "version https://git-lfs.github.com/spec/v1" src/engine/andromeda.wasm

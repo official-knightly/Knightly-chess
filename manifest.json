@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Knightly Chess Tools",
+  "version": "1.0.0",
+  "description": "Post-game chess analysis and move arrows for Chess.com, Lichess, and WorldChess.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "https://www.chess.com/*",
+    "https://chess.com/*",
+    "https://lichess.org/*",
+    "https://www.worldchess.com/*",
+    "https://worldchess.com/*"
+  ],
+  "action": {
+    "default_title": "Knightly Chess Tools",
+    "default_popup": "extension/popup.html"
+  },
+  "content_scripts": [{
+    "matches": [
+      "https://www.chess.com/*",
+      "https://chess.com/*",
+      "https://lichess.org/*",
+      "https://www.worldchess.com/*",
+      "https://worldchess.com/*"
+    ],
+    "js": ["extension/board.js"],
+    "run_at": "document_idle"
+  }],
+  "web_accessible_resources": [{
+    "resources": [
+      "public/engine/stockfish.js",
+      "public/engine/stockfish.wasm",
+      "public/engine/stockfish-part-*.wasm",
+      "public/engine/stockfish-single-part-*.wasm",
+      "public/engine/stockfish-asm.js",
+      "public/engine/dragon.js",
+      "public/engine/dragon.wasm",
+      "public/engine/explanation-engine.js",
+      "public/engine/explanation-engine.wasm",
+      "public/engine/rodent/*"
+    ],
+    "matches": [
+      "https://www.chess.com/*",
+      "https://chess.com/*",
+      "https://lichess.org/*",
+      "https://www.worldchess.com/*",
+      "https://worldchess.com/*"
+    ]
+  }]
+}
