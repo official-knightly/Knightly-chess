@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Knightly Chess Tools</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header><div class="brand-mark">♞</div><div><h1>Knightly</h1><p>Chess Tools · Post-game analysis</p></div></header>
+    <div id="site-status" class="status">Checking chessboard…</div>
+
+    <section>
+      <h2>Move arrow</h2>
+      <div class="fields">
+        <label>From <input id="from" value="e2" maxlength="2" autocomplete="off"></label>
+        <label>To <input id="to" value="e4" maxlength="2" autocomplete="off"></label>
+      </div>
+      <button id="draw" class="primary">Draw arrow</button>
+      <button id="clear" class="secondary">Clear arrows</button>
+    </section>
+
+    <section>
+      <h2>Engine analysis</h2>
+      <p class="hint">Analysis is for finished games and study/review pages only. Paste a full FEN position below.</p>
+      <textarea id="fen" rows="3" spellcheck="false" placeholder="Paste FEN here…"></textarea>
+      <div class="fields">
+        <label>Engine
+          <select id="engine">
+            <option value="stockfish">Stockfish</option>
+          </select>
+        </label>
+        <label>Depth
+          <select id="depth"><option>10</option><option selected>14</option><option>18</option><option>22</option></select>
+        </label>
+      </div>
+      <button id="get-fen" class="secondary">Try to read page FEN</button>
+      <button id="analyze" class="primary">Analyze position</button>
+      <button id="stop" class="secondary" disabled>Stop engine</button>
+      <pre id="engine-output" aria-live="polite">Engine idle.</pre>
+    </section>
+    <footer>Does not make moves or play for you. Respect each site's fair-play rules.</footer>
+    <script src="popup.js"></script>
+  </main>
+</body>
+</html>
